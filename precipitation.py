@@ -1,16 +1,12 @@
 """
 =====================
-NWS Precipitation Map
+NWS Last-7-days Precipitation Map (Daily Updated)
 =====================
 
-Plot a 1-day precipitation map using a netCDF file from the National Weather Service.
+Plot a last-7-days precipitation map of the U.S. using a netCDF file from the National Weather Service.
 
-This opens the data directly in memory using the support in the netCDF library to open
-from an existing memory buffer. In addition to CartoPy and Matplotlib, this uses
-a custom colortable as well as MetPy's unit support.
 """
 ###############################
-# Imports
 from datetime import datetime, timedelta
 from urllib.request import urlopen
 
@@ -24,7 +20,7 @@ from netCDF4 import Dataset
 ###############################
 # Download the data from the National Weather Service.
 dt = datetime.utcnow() - timedelta(days=1)  # This should always be available
-url = 'http://water.weather.gov/precip/downloads/{dt:%Y/%m/%d}/nws_precip_1day_'\
+url = 'http://water.weather.gov/precip/downloads/{dt:%Y/%m/%d}/nws_precip_last7days_'\
       '{dt:%Y%m%d}_conus.nc'.format(dt=dt)
 data = urlopen(url).read()
 nc = Dataset('data', memory=data)
@@ -91,4 +87,4 @@ cbar = plt.colorbar(cs, orientation='horizontal')
 cbar.set_label(data.units)
 
 ax.set_title(prcpvar.long_name + ' for period ending ' + nc.creation_time)
-plt.show()
+plt.savefig('precipitation.png')
